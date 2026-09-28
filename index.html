@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orden aleatorio de estudiantes</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <div class="header">
+        <h1>Orden aleatorio de estudiantes</h1>
+        <p class="subtitle">
+          Presiona el botón para generar un nuevo orden aleatorio de los 40 alumnos.
+        </p>
+      </div>
+
+      <div class="controls">
+        <button id="shuffleBtn" type="button">Reordenar aleatoriamente</button>
+        <button id="resetBtn" type="button">Restablecer orden original</button>
+        <span class="status" id="status">Orden original</span>
+      </div>
+
+      <ol id="studentList"></ol>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
