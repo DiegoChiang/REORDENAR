@@ -1,0 +1,284 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Orden aleatorio de estudiantes</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f4f5f7;
+      color: #1f2937;
+    }
+
+    .container {
+      width: min(900px, calc(100% - 32px));
+      margin: 40px auto;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+      overflow: hidden;
+    }
+
+    .header {
+      padding: 24px 28px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      margin: 0;
+      color: #6b7280;
+    }
+
+    .controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      padding: 20px 28px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    #shuffleBtn {
+      background: #111827;
+      color: white;
+    }
+
+    #resetBtn {
+      background: #e5e7eb;
+      color: #111827;
+    }
+
+    button:hover {
+      filter: brightness(0.96);
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    .status {
+      margin-left: auto;
+      align-self: center;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    ol {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: grid;
+      grid-template-columns: 54px 1fr;
+      align-items: center;
+      min-height: 58px;
+      padding: 8px 28px;
+      border-bottom: 1px solid #f0f1f3;
+    }
+
+    li:last-child {
+      border-bottom: 0;
+    }
+
+    .number {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #f3f4f6;
+      font-weight: 700;
+      color: #374151;
+    }
+
+    .name {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        width: min(100% - 20px, 900px);
+        margin: 16px auto;
+      }
+
+      .header,
+      .controls {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      h1 {
+        font-size: 23px;
+      }
+
+      li {
+        padding-left: 18px;
+        padding-right: 18px;
+        grid-template-columns: 46px 1fr;
+      }
+
+      .status {
+        width: 100%;
+        margin-left: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <div class="header">
+        <h1>Orden aleatorio de estudiantes</h1>
+        <p class="subtitle">Presiona el botón para generar un nuevo orden aleatorio de los 40 alumnos.</p>
+      </div>
+
+      <div class="controls">
+        <button id="shuffleBtn" type="button">Reordenar aleatoriamente</button>
+        <button id="resetBtn" type="button">Restablecer orden original</button>
+        <span class="status" id="status">Orden original</span>
+      </div>
+
+      <ol id="studentList"></ol>
+    </section>
+  </main>
+
+  <script>
+    const originalStudents = [
+      'ANTUANETH MARIANA ACOSTA REY',
+      'LUCIANA ALESSANDRA ALFARO CAMPOMANES',
+      'GABRIEL IGNACIO ARBULU LEMA',
+      'GABRIELA LIZET AYALA ATOCHE',
+      'CRISTHYNE SHANTAL CABALLERO VILLANUEVA',
+      'DIEGO ALESSANDRO MATIAS CALICHE CUBA',
+      'MACARENA SUSANA CARLIN FEBRES',
+      'FABIANA CARRERA SEGURA',
+      'YAMILA AIXA CASTAÑEDA CENTTI',
+      'ANDREA MELANIE CASTAÑEDA GARCIA',
+      'KIARA JACQUELINE CASTRO RAMIREZ',
+      'FIORELLA MIRELLA CRISTOBAL CHAVEZ',
+      'ZAHIRA CUMPA TAHA',
+      'GONZALO ANTONIO FERRUZO MAXIMILIANO',
+      'MARIANA PAOLA GRIMALDO CASTILLO',
+      'SOFIA PAMELA GUZMAN LEIGH',
+      'HENRY ANIBAL HUAMAN BARRERA',
+      'IVANA PAULA HURTADO GAMBARINI',
+      'CARLOS ALBERTO LIMA ROJAS',
+      'RODRIGO FABIAN LINARES CORREA',
+      'CRISTOFER EVARISTO LOZANO ROSAS',
+      'ALEJANDRA LUGON ORTIZ',
+      'ANTONIO MANDUJANO YÑIPE',
+      'JESUS FELIPE MEDINA TALAVERA',
+      'ANGEL GABRIEL MERINO ZAMBRANO',
+      'FELIPE FERNANDO MONTALVAN VARELA',
+      'JOSE MIGUEL MONTENEGRO VALENCIA',
+      'FABRIZIO SEBASTIAN ANDRES PALOMINO LINARES',
+      'LUCIANA PANIAGUA NEYRA',
+      'ANGELO BERNARDO RODRIGUEZ HERNANDEZ',
+      'CAMILA MIA RODRIGUEZ MARADIEGUE',
+      'JUAN DIEGO CHRISTIAN RUSSO CAMI',
+      'RICARDO ANDRE SANCHEZ LORA',
+      'IGNACIO SILVA SORIA',
+      'ISABEL TENORIO FERNANDEZ',
+      'MATIAS FERNANDO VALDEZ TAPIA',
+      'VALERIA LETICIA VARGAS HERRERA',
+      'PIERO ANGELLO VASQUEZ FIGUEROA',
+      'RODRIGO ALEJANDRO YUPANQUI GOMEZ',
+      'ALEJANDRO GUSTAVO ZANCA CALLE'
+    ];
+
+    let students = [...originalStudents];
+
+    function renderList() {
+      const list = document.getElementById("studentList");
+      list.innerHTML = "";
+
+      students.forEach((student, index) => {
+        const item = document.createElement("li");
+
+        const number = document.createElement("span");
+        number.className = "number";
+        number.textContent = index + 1;
+
+        const name = document.createElement("span");
+        name.className = "name";
+        name.textContent = student;
+
+        item.append(number, name);
+        list.appendChild(item);
+      });
+    }
+
+    // Devuelve un entero aleatorio entre 0 y maxExclusive - 1.
+    // Usa Web Crypto, disponible en navegadores modernos.
+    function randomInt(maxExclusive) {
+      const maxUint32 = 0x100000000;
+      const limit = maxUint32 - (maxUint32 % maxExclusive);
+      const values = new Uint32Array(1);
+
+      do {
+        crypto.getRandomValues(values);
+      } while (values[0] >= limit);
+
+      return values[0] % maxExclusive;
+    }
+
+    // Fisher-Yates: cada permutación tiene la misma probabilidad.
+    function shuffle(array) {
+      const result = [...array];
+
+      for (let i = result.length - 1; i > 0; i--) {
+        const j = randomInt(i + 1);
+        [result[i], result[j]] = [result[j], result[i]];
+      }
+
+      return result;
+    }
+
+    document.getElementById("shuffleBtn").addEventListener("click", () => {
+      students = shuffle(students);
+      renderList();
+
+      const now = new Date();
+      document.getElementById("status").textContent =
+        "Último sorteo: " + now.toLocaleTimeString("es-PE", {
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit"
+        });
+    });
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      students = [...originalStudents];
+      renderList();
+      document.getElementById("status").textContent = "Orden original";
+    });
+
+    renderList();
+  </script>
+</body>
+</html>
