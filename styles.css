@@ -10,7 +10,7 @@ body {
 }
 
 .container {
-  width: min(900px, calc(100% - 32px));
+  width: min(1360px, calc(100% - 32px));
   margin: 40px auto;
 }
 
@@ -71,6 +71,11 @@ button:active {
   transform: translateY(1px);
 }
 
+button:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 3px;
+}
+
 .status {
   margin-left: auto;
   align-self: center;
@@ -78,13 +83,40 @@ button:active {
   font-size: 14px;
 }
 
-ol {
+.view-switcher {
+  display: flex;
+  gap: 6px;
+  padding: 16px 28px 0;
+  background: #f9fafb;
+}
+
+.view-tab {
+  position: relative;
+  border: 1px solid transparent;
+  border-radius: 10px 10px 0 0;
+  padding: 11px 18px;
+  background: transparent;
+  color: #6b7280;
+}
+
+.view-tab.is-active {
+  border-color: #e5e7eb;
+  border-bottom-color: #ffffff;
+  background: #ffffff;
+  color: #111827;
+}
+
+.view-panel[hidden] {
+  display: none;
+}
+
+.student-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
-li {
+.student-list li {
   display: grid;
   grid-template-columns: 54px 1fr;
   align-items: center;
@@ -93,7 +125,7 @@ li {
   border-bottom: 1px solid #f0f1f3;
 }
 
-li:last-child {
+.student-list li:last-child {
   border-bottom: 0;
 }
 
@@ -113,14 +145,122 @@ li:last-child {
   font-weight: 600;
 }
 
+.classroom-view {
+  padding: 28px;
+}
+
+.classroom-front {
+  width: min(560px, 70%);
+  margin: 0 auto 32px;
+  border: 5px solid #374151;
+  border-radius: 8px;
+  padding: 10px 18px;
+  background: #f8fafc;
+  box-shadow: 0 5px 0 #d1d5db;
+  text-align: center;
+}
+
+.classroom-front span,
+.classroom-front small {
+  display: block;
+}
+
+.classroom-front span {
+  color: #111827;
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.classroom-front small {
+  margin-top: 2px;
+  color: #6b7280;
+  font-size: 11px;
+}
+
+.classroom-scroll {
+  overflow-x: auto;
+  padding: 4px 4px 12px;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.classroom-layout {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(540px, 1fr));
+  gap: clamp(44px, 6vw, 88px);
+  min-width: 1130px;
+  max-width: 1260px;
+  margin: 0 auto;
+}
+
+.seat-block {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.seat {
+  position: relative;
+  display: flex;
+  aspect-ratio: 1;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border: 2px solid #dbe3ee;
+  border-radius: 12px;
+  padding: 24px 8px 10px;
+  background: linear-gradient(145deg, #ffffff, #f1f5f9);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.07);
+  text-align: center;
+}
+
+.seat-number {
+  position: absolute;
+  top: 7px;
+  left: 8px;
+  display: grid;
+  width: 21px;
+  height: 21px;
+  place-items: center;
+  border-radius: 6px;
+  background: #111827;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.seat-name {
+  display: -webkit-box;
+  overflow: hidden;
+  color: #334155;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.aisle-label {
+  margin: 8px 0 0;
+  color: #94a3b8;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 @media (max-width: 600px) {
   .container {
-    width: min(100% - 20px, 900px);
+    width: calc(100% - 20px);
     margin: 16px auto;
   }
 
   .header,
-  .controls {
+  .controls,
+  .view-switcher {
     padding-left: 18px;
     padding-right: 18px;
   }
@@ -129,7 +269,7 @@ li:last-child {
     font-size: 23px;
   }
 
-  li {
+  .student-list li {
     padding-left: 18px;
     padding-right: 18px;
     grid-template-columns: 46px 1fr;
@@ -138,5 +278,34 @@ li:last-child {
   .status {
     width: 100%;
     margin-left: 0;
+  }
+
+  .view-switcher {
+    overflow-x: auto;
+  }
+
+  .view-tab {
+    flex: 1 0 auto;
+    padding-right: 14px;
+    padding-left: 14px;
+  }
+
+  .classroom-view {
+    padding: 22px 12px;
+  }
+
+  .classroom-front {
+    width: 80%;
+    margin-bottom: 24px;
+  }
+
+  .classroom-layout {
+    grid-template-columns: repeat(2, 460px);
+    gap: 42px;
+    min-width: 962px;
+  }
+
+  .seat-block {
+    gap: 10px;
   }
 }

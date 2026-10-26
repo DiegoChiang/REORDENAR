@@ -63,6 +63,52 @@ function renderList() {
   });
 }
 
+function createSeat(student, index) {
+  const seat = document.createElement("div");
+  seat.className = "seat";
+  seat.setAttribute("role", "listitem");
+  seat.setAttribute("aria-label", `Asiento ${index + 1}: ${student}`);
+
+  const number = document.createElement("span");
+  number.className = "seat-number";
+  number.textContent = index + 1;
+
+  const name = document.createElement("span");
+  name.className = "seat-name";
+  name.textContent = student;
+
+  seat.append(number, name);
+  return seat;
+}
+
+function renderClassroom() {
+  const classroom = document.getElementById("classroomLayout");
+  classroom.innerHTML = "";
+
+  const leftBlock = document.createElement("div");
+  leftBlock.className = "seat-block";
+  leftBlock.setAttribute("role", "list");
+  leftBlock.setAttribute("aria-label", "Bloque izquierdo");
+
+  const rightBlock = document.createElement("div");
+  rightBlock.className = "seat-block";
+  rightBlock.setAttribute("role", "list");
+  rightBlock.setAttribute("aria-label", "Bloque derecho");
+
+  students.forEach((student, index) => {
+    const positionInRow = index % 10;
+    const targetBlock = positionInRow < 5 ? leftBlock : rightBlock;
+    targetBlock.appendChild(createSeat(student, index));
+  });
+
+  classroom.append(leftBlock, rightBlock);
+}
+
+function renderStudents() {
+  renderList();
+  renderClassroom();
+}
+
 function randomInt(maxExclusive) {
   const maxUint32 = 0x100000000;
   const limit = maxUint32 - (maxUint32 % maxExclusive);
@@ -88,7 +134,7 @@ function shuffle(array) {
 
 document.getElementById("shuffleBtn").addEventListener("click", () => {
   students = shuffle(students);
-  renderList();
+  renderStudents();
 
   const now = new Date();
   document.getElementById("status").textContent =
@@ -101,8 +147,37 @@ document.getElementById("shuffleBtn").addEventListener("click", () => {
 
 document.getElementById("resetBtn").addEventListener("click", () => {
   students = [...originalStudents];
-  renderList();
+  renderStudents();
   document.getElementById("status").textContent = "Orden original";
 });
 
-renderList();
+const viewTabs = [...document.querySelectorAll(".view-tab")];
+
+function selectView(selectedTab) {
+  viewTabs.forEach((tab) => {
+    const isSelected = tab === selectedTab;
+    const panel = document.getElementById(tab.dataset.view);
+
+    tab.classList.toggle("is-active", isSelected);
+    tab.setAttribute("aria-selected", isSelected);
+    tab.tabIndex = isSelected ? 0 : -1;
+    panel.hidden = !isSelected;
+  });
+}
+
+viewTabs.forEach((tab, tabIndex) => {
+  tab.addEventListener("click", () => selectView(tab));
+  tab.addEventListener("keydown", (event) => {
+    if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") {
+      return;
+    }
+
+    event.preventDefault();
+    const direction = event.key === "ArrowRight" ? 1 : -1;
+    const nextIndex = (tabIndex + direction + viewTabs.length) % viewTabs.length;
+    selectView(viewTabs[nextIndex]);
+    viewTabs[nextIndex].focus();
+  });
+});
+
+renderStudents();
